@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  mozio-python:
+    build:
+      context: .
+      dockerfile: ./.docker/python/Dockerfile
+    container_name: mozio-python
+    env_file:
+      - "./.env"
+    restart: always
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    working_dir: /mozio
+    volumes:
+      - ".:/mozio:cached"
+    depends_on:
+      - "mozio-mongo"
+    ports:
+      - "${APP_PORT}:8000"
+    networks:
+      - mozio
+    secrets:
+      - source: ssh_key
+        target: /home/docker/.ssh/id_rsa
+
+  mozio-mongo:
+    image: mongo:5.0
+    container_name: mozio-mongo
+    environment:
+      MONGO_INITDB_DATABASE: "mozio"
+      MONGO_INITDB_ROOT_USERNAME: "mozio-admin"
+      MONGO_INITDB_ROOT_PASSWORD: "mozio-admin"
+    restart: always
+    volumes:
+      - "./.docker/mongo:/docker-entrypoint-initdb.d:ro"
+      - "mozio-mongo:/data/db"
+    ports:
+      - "${MONGODB_PORT}:27017"
+    networks:
+      - mozio
+
+networks:
+  mozio:
+    name: mozio
+
+volumes:
+  mozio-mongo:
+    driver: local
+
+secrets:
+  ssh_key:
+    file: ~/.ssh/id_rsa
