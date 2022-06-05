@@ -72,23 +72,26 @@ class ProvidersByServiceAreaLocation(APIView):
         if lat is None or lng is None:
             return Response([])
 
-        providers = pymongo.get_collection('providers_provider').aggregate([{
-            '$lookup': {
-                'from': 'providers_servicearea',
-                'as': 'service_areas',
-                'localField': '_id',
-                'foreignField': 'provider_id',
-                'pipeline': [
-                    {
-                        '$match': {
-                            'location': {
-                                '$geoIntersects': {
-                                    '$geometry': {'type': 'Point', 'coordinates': [float(lng), float(lat)]}}}
+        providers = pymongo.get_collection('providers_provider').aggregate([
+            {
+                '$lookup': {
+                    'from': 'providers_servicearea',
+                    'as': 'service_areas',
+                    'localField': '_id',
+                    'foreignField': 'provider_id',
+                    'pipeline': [
+                        {
+                            '$match': {
+                                'location': {
+                                    '$geoIntersects': {
+                                        '$geometry': {'type': 'Point', 'coordinates': [float(lng), float(lat)]}}}
+                            }
                         }
-                    }
-                ]
-            }
-        }])
+                    ]
+                }
+            },
+            {'$match': {'service_areas': {'$exists': True, '$ne': []}}}
+        ])
 
         providers = list(providers)
         for p, provider in enumerate(providers):
