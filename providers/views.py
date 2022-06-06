@@ -116,4 +116,4 @@ class ProvidersByServiceAreaLocation(APIView):
                 providers[p]['service_areas'][s]['created_at'] = str(service_area['created_at'])
                 providers[p]['service_areas'][s]['updated_at'] = str(service_area['updated_at'])
 
-        return HttpResponse(providers, content_type='application/json')
+        return HttpResponse([providers], content_type='application/json')

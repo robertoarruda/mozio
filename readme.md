@@ -47,46 +47,198 @@ Execute the command below to deactivate:
 deactivate
 ```
 
-## Demo [AWS]
-### [POST] /simian
-To verify that a DNA is simian, run the following command:
+## Online demo
+
+Documentation: [http://67.205.179.16:8000/provider/](http://67.205.179.16:8000/provider/)
+
+### Provider
+
+- [GET] /provider/
 ```
-curl -v --request POST \
-  --url http://54.211.82.161:5000/simian \
-  --header 'content-type: application/json' \
-  --data '{
-    "dna": [
-        "AT",
-        "GC"
-    ]
-}'
+// Response
+[
+    {
+        "_id": "9d2b85918f1f262230ff4919"
+        "name": "Provider Name",
+        "email": "test@test.com",
+        "phone_number": "+5511991009887",
+        "language": "language",
+        "currency": "BRL"
+    }
+]
 ```
 
-If the DNA is identified as a simian, you will get an HTTP 200-OK:
+- [POST] /provider/
 ```
-< HTTP/1.0 200 OK
-< Content-Type: application/json
-< Content-Length: 61
-< Server: Werkzeug/0.16.0 Python/3.8.0
-< Date: Fri, 27 Dec 2019 12:23:14 GMT
-```
-
-Otherwise an HTTP 403-FORBIDDEN:
-```
-< HTTP/1.0 403 FORBIDDEN
-< Content-Type: text/html; charset=utf-8
-< Content-Length: 0
-< Server: Werkzeug/0.16.0 Python/3.8.0
-< Date: Fri, 27 Dec 2019 12:43:36 GMT
-```
-### [GET] /stats
-To query DNA checks statistics, run the following command:
-```
-curl --request GET \
-  --url http://54.211.82.161:5000/stats
+// Body
+{
+    "name": "Provider Name",
+    "email": "test@test.com",
+    "phone_number": "+5511991009887",
+    "language": "language",
+    "currency": "BRL"
+}
 ```
 
-This query will return the following json:
+- [GET] /provider/[id]
 ```
-{"count_mutant_dna": 40, "count_human_dna": 100: "ratio": 0.4}
+// Response
+{
+    "_id": "9d2b85918f1f262230ff4919"
+    "name": "Provider Name",
+    "email": "test@test.com",
+    "phone_number": "+5511991009887",
+    "language": "language",
+    "currency": "BRL"
+}
+```
+
+- [PUT] /provider/[id]
+```
+// Body
+{
+    "name": "Provider Name UPDATED",
+    "email": "test@test.com",
+    "phone_number": "+5511991009887",
+    "language": "language",
+    "currency": "BRL"
+}
+```
+
+- [PATCH] /provider/[id]
+```
+// Body
+{
+    "name": "Provider Name UPDATED"
+}
+```
+
+- [DELETE] /provider/[id]
+```
+// No content
+```
+
+### Service area
+
+- [GET] /provider/service_area
+```
+// Response
+[
+    {
+        "_id": "f530f9184f1d2b89f2262991",
+        "provider_id": "9d2b85918f1f262230ff4919",
+        "name": "Service area",
+        "price": 100.0,
+        "location": {
+            "type": "Polygon",
+            "coordinates": [[[-73.958, 40.8003], [-73.9498, 40.7968], [-73.9737, 40.7648], [-73.9814, 40.7681], [-73.958, 40.8003]]]
+        }
+    }
+]
+```
+
+- [POST] /provider/service_area
+```
+// Body
+{
+	"provider_id": "9d2b85918f1f262230ff4919",
+	"name": "Service area",
+	"price": 100.0,
+	"location": {
+		"type": "Polygon",
+		"coordinates": [[[-73.958, 40.8003], [-73.9498, 40.7968], [-73.9737, 40.7648], [-73.9814, 40.7681], [-73.958, 40.8003]]]
+	}
+}
+```
+
+- [GET] /provider/service_area/[id]
+```
+// Response
+{
+    "_id": "f530f9184f1d2b89f2262991",
+	"provider_id": "9d2b85918f1f262230ff4919",
+	"name": "Service area",
+	"price": 100.0,
+	"location": {
+		"type": "Polygon",
+		"coordinates": [[[-73.958, 40.8003], [-73.9498, 40.7968], [-73.9737, 40.7648], [-73.9814, 40.7681], [-73.958, 40.8003]]]
+	}
+}
+```
+
+- [PUT] /provider/service_area/[id]
+```
+// Body
+{
+    "_id": "f530f9184f1d2b89f2262991",
+	"provider_id": "9d2b85918f1f262230ff4919",
+	"name": "Service area UPDATED",
+	"price": 100.0,
+	"location": {
+		"type": "Polygon",
+		"coordinates": [[[-73.958, 40.8003], [-73.9498, 40.7968], [-73.9737, 40.7648], [-73.9814, 40.7681], [-73.958, 40.8003]]]
+	}
+}
+```
+
+- [PATCH] /provider/service_area/[id]
+```
+// Body
+{
+    "name": "Service area UPDATED"
+}
+```
+
+- [DELETE] /provider/service_area/[id]
+```
+// No content
+```
+
+### List providers by service area location
+
+- [GET] /provider/by_service_area_location/?lat=[lat]&lng=[lng]
+```
+// Response
+[
+	{
+        "_id": "9d2b85918f1f262230ff4919"
+        "name": "Provider Name",
+        "email": "test@test.com",
+        "phone_number": "+5511991009887",
+        "language": "language",
+        "currency": "BRL"
+		'service_areas': [
+			{
+                "_id": "f530f9184f1d2b89f2262991",
+                "provider_id": "9d2b85918f1f262230ff4919",
+                "name": "Service area",
+                "price": 100.0,
+                "location": {
+                    "type": "Polygon",
+                    "coordinates": [[[-73.958, 40.8003], [-73.9498, 40.7968], [-73.9737, 40.7648], [-73.9814, 40.7681], [-73.958, 40.8003]]]
+                }
+			}
+		]
+	},
+	{
+        "_id": "2230ff49d2b85f26918f1919"
+        "name": "Provider Name 2",
+        "email": "test2@test.com",
+        "phone_number": "+5514991098870",
+        "language": "language",
+        "currency": "BRL"
+		'service_areas': [
+			{
+                "_id": "d2b89f22f530f9184f162991",
+                "provider_id": "2230ff49d2b85f26918f1919",
+                "name": "Service area 2",
+                "price": 50.0,
+                "location": {
+                    "type": "Polygon",
+                    "coordinates": [[[-73.958, 40.8003], [-73.9498, 40.7968], [-73.9737, 40.7648], [-73.9814, 40.7681], [-73.958, 40.8003]]]
+                }
+			}
+		]
+	}
+]
 ```
