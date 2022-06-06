@@ -49,7 +49,8 @@ deactivate
 
 ## Online demo
 
-Documentation: [http://67.205.179.16:8000/provider/](http://67.205.179.16:8000/provider/)
+Documentation [AWS]: [http://ec2-54-234-41-253.compute-1.amazonaws.com:8000/provider/](http://ec2-54-234-41-253.compute-1.amazonaws.com:8000/provider/)
+Documentation [DigitalOcean]: [http://67.205.179.16:8000/provider/](http://67.205.179.16:8000/provider/)
 
 ### Provider
 
