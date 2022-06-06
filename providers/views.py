@@ -1,5 +1,7 @@
 from bson import ObjectId
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
 from rest_framework import viewsets, mixins
 from rest_framework.exceptions import NotFound
@@ -26,6 +28,10 @@ class ProviderViewSet(viewsets.ModelViewSet):
     filterset_fields = ('name', 'email', 'phone_number', 'language', 'currency',)
     search_fields = ('name', 'email', 'phone_number',)
 
+    @method_decorator(cache_page(60))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         return self.queryset.order_by('-name')
 
@@ -47,6 +53,10 @@ class ServiceAreaViewSet(viewsets.ModelViewSet):
     filterset_fields = ('name', 'price')
     search_fields = ('name',)
 
+    @method_decorator(cache_page(60))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def validate_provider_id(self, provider_id):
         provider = Provider.objects.filter(_id=ObjectId(provider_id)).exists()
         if not provider:
@@ -65,6 +75,7 @@ class ServiceAreaViewSet(viewsets.ModelViewSet):
 
 
 class ProvidersByServiceAreaLocation(APIView):
+    @method_decorator(cache_page(60))
     def get(self, request):
         lat = self.request.query_params.get('lat')
         lng = self.request.query_params.get('lng')
